@@ -1,12 +1,18 @@
 import logging
 
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
+from rest_framework.viewsets import ModelViewSet
 
-from .models import User, Project, Category, Priority, Task
-from .serializers import UserSerializer, ProjectSerializer, CategorySerializer, PrioritySerializer, TaskSerializer
-from .permissions import IsAdmin, IsManager, IsEmployee
+from .models import Category, Priority, Project, Task, User
+from .permissions import IsAdmin, IsEmployee, IsManager
+from .serializers import (
+    CategorySerializer,
+    PrioritySerializer,
+    ProjectSerializer,
+    TaskSerializer,
+    UserSerializer,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -42,5 +48,5 @@ class TaskViewSet(ModelViewSet):
     permission_classes = [IsEmployee]
 
     def perform_create(self, serializer):
-        logger.info("Creating a new task")
+        logger.info('Creating a new task')
         serializer.save()

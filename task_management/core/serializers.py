@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User, Project, Category, Priority, Task
+from .models import Category, Priority, Project, Task, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -34,6 +34,6 @@ class TaskSerializer(serializers.ModelSerializer):
 
     def validate_title(self, value):
         if len(value) < 5:
-            raise serializers.ValidationError("Title must be at least 5 characters long.")
+            raise serializers.ValidationError('Title must be at least 5 characters long.')
 
         return value
