@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .chat-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        .chat-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        input {
+            width: calc(100% - 80px);
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin-left: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .logout {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Hello, {{ request.user }}! Welcome to Chat!</h1>
+
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'logout-user' %}" class="logout">Logout from chat</a>
+    {% endif %}
+
+    <div class="chat-container">
+        <div class="chat-box" id="id_chat_item_container"></div>
+        <input type="text" id="id_message_send_input" placeholder="Type your message..." />
+        <button type="submit" id="id_message_send_button">Send</button>
+    </div>
+
+    <script>
+        const chatSocket = new WebSocket("ws://" + window.location.host + "/");
+
+        chatSocket.onopen = function () {
+            console.log("Connection established!");
+        };
+
+        chatSocket.onclose = function () {
+            console.log("Connection lost!");
+        };
+
+        document.querySelector("#id_message_send_input").focus();
+
+        document.querySelector("#id_message_send_input").onkeyup = function (e) {
+            if (e.key === "Enter") {
+                document.querySelector("#id_message_send_button").click();
+            }
+        };
+
+        document.querySelector("#id_message_send_button").onclick = function () {
+            const messageInput = document.querySelector("#id_message_send_input").value.trim();
+            if (messageInput) {
+                chatSocket.send(JSON.stringify({
+                    message: messageInput,
+                    username: "{{ request.user.username }}"
+                }));
+                document.querySelector("#id_message_send_input").value = "";
+            }
+        };
+
+        chatSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            const div = document.createElement("div");
+            div.innerHTML = `<strong>${data.username}:</strong> ${data.message}`;
+            document.querySelector("#id_chat_item_container").appendChild(div);
+            document.querySelector("#id_chat_item_container").scrollTop = document.querySelector("#id_chat_item_container").scrollHeight;
+        };
+    </script>
+
+</body>
+</html>

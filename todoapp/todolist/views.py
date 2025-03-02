@@ -8,6 +8,7 @@ def index(request):
     todos = Todo.objects.all()
     return render(request, 'base.html', {'todo_list': todos})
 
+
 @require_http_methods(['POST'])
 def add(request):
     title = request.POST['title']

@@ -4,7 +4,7 @@ target-version = "py311"
 line-length = 110
 fix = true
 select = ["E", "F", "W", "C", "I", "N", "Q"]
-ignore = ["F403", "W291", "D", "F405", "D203", "D213", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107", "E501"]
+ignore = ["F403", "W291", "D"]
 
 [tool.ruff.flake8-quotes]
 inline-quotes = "single"

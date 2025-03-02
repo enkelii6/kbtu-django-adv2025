@@ -26,7 +26,7 @@ def home(request: Request, db: Session = Depends(get_db)):
 
 
 @app.get('/items/{item_id}')
-def read_item (item_id: int):
+def read_item(item_id: int):
     return {'item_id': item_id}
 
 
